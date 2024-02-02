@@ -1,3 +1,6 @@
+/**
+ * core module imports
+ */
 const fs = require('fs');
 const path = require('path');
 
@@ -40,6 +43,60 @@ module.exports = class Todo {
   constructor(task) {
     this.task = task;
     this.isCompleted = false;
+  }
+
+  static update(id, updatedData, res) {
+    readTodosFromFile(data => {
+      let modifiedData = {}
+
+      const newData = data.map(d => {
+        if(d.id === Number(id)) {
+          modifiedData = {
+            ...d,
+            ...updatedData
+          }
+
+          return modifiedData;
+        }
+
+        return d;
+      })
+
+      if(Object.keys(modifiedData).length){
+        fs.writeFile(p, JSON.stringify(newData), err => {
+          if(!err) return
+    
+          console.log(`ERR: UPDATING TASK \n${err}`)
+        })
+      }
+
+      res.send(modifiedData);
+    })
+  }
+
+  static delete(id, res) {
+    readTodosFromFile(data => {
+      let deletedData = {}
+
+      const newData = data.filter(d => {
+        if(d.id !== Number(id)) return true;
+
+        deletedData = d;
+        return false;
+      })
+
+      console.log(newData)
+
+      if(Object.keys(deletedData).length){
+        fs.writeFile(p, JSON.stringify(newData), err => {
+          if(!err) return;
+    
+          console.log(`ERR: DELETING TASK \n${err}`);
+        })
+      }
+
+      res.send(deletedData);
+    })
   }
 
   save(res) {

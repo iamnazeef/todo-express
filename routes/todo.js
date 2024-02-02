@@ -1,18 +1,25 @@
+/**
+ * core module imports
+ */
+
+/**
+ * third-party module imports
+ */
 const express = require('express');
 
-const Todo = require('../models/Todo')
+/**
+ * local module imports
+ */
+const controller = require('../controllers/todo')
 
 const route = express.Router();
 
-route.get('/', (req, res, next) => {
-  Todo.getTodos(data => {
-    res.send(data);
-  });
-});
+route.get('/', controller.getTodos);
 
-route.post('/', (req, res, next) => {
-  const todo = new Todo(req.body.task);
-  todo.save(res)
-})
+route.post('/add', controller.postTodo)
+
+route.patch('/edit/:todoId', controller.patchTodo)
+
+route.delete('/delete/:todoId', controller.deleteTodo)
 
 module.exports = route;
